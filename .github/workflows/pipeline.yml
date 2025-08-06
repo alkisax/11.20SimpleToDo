@@ -11,118 +11,64 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  build-frontend:
+  ci-pipeline:
     runs-on: ubuntu-latest
+    env:
+      MONGODB_TEST_URI: ${{ secrets.MONGODB_TEST_URI }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # - name: Always fail (for testing)
-      #   run: exit 1
-
+      # === FRONTEND ===
       - name: Install frontend dependencies
         run: npm install
         working-directory: ./frontend
 
-      - name: build
+      - name: Lint frontend
+        run: npm run lint
+        working-directory: ./frontend
+
+      - name: Build frontend
         run: npm run build
         working-directory: ./frontend
 
-  lint-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      # === BACKEND ===
       - name: Install backend dependencies
         run: npm install
         working-directory: ./backend
-      - name: Run backend lint
+
+      - name: Lint backend
         run: npm run lint
-        working-directory: ./backend
-
-  lint-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install frontend dependencies
-        run: npm install
-        working-directory: ./frontend
-      - name: Run frontend lint
-        run: npm run lint
-        working-directory: ./frontend
-
-  build-backend:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install backend dependencies
-        run: npm install
         working-directory: ./backend
 
       - name: Build backend
         run: npm run build
-        working-directory: ./backend
-
-  test-backend:
-    runs-on: ubuntu-latest
-    env:
-      MONGODB_TEST_URI: ${{ secrets.MONGODB_TEST_URI }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install backend dependencies
-        run: npm install
         working-directory: ./backend
 
       - name: Run backend tests
         run: npm run test
         working-directory: ./backend
 
-  e2e-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install e2e dependencies
+      # === E2E ===
+      - name: Install E2E dependencies
         run: npm install
         working-directory: ./e2e
-      - name: Build backend
-        run: npm run build
-        working-directory: ./backend
-      - name: Start backend server
+
+      - name: Start backend server in background
         run: npm run start &
         working-directory: ./backend
         env:
           MONGODB_TEST_URI: ${{ secrets.MONGODB_TEST_URI }}
+
+      - name: Wait for backend to be ready
+        run: npx wait-on http://localhost:3001/health
+
       - name: Run Cypress tests
-        uses: cypress-io/github-action@v5
-        with:
-          start: npm run start --prefix ./backend
-          wait-on: http://localhost:3001/health
-          command: npm run cypress:run
-          working-directory: ./e2e
+        run: npm run cypress:run
+        working-directory: ./e2e
