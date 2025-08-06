@@ -90,4 +90,3 @@ jobs:
           curl -X GET \
             -H "Accept: application/json" \
             "https://api.render.com/deploy/${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}"
-
