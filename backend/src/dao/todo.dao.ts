@@ -1,4 +1,4 @@
-import { TodoType, TodoInput } from '../types/Types'
+import { TodoType, TodoInput } from '../types/Types';
 import Todo from '../models/todo.models';
 
 const create = async (todoData: TodoInput): Promise<TodoType> => {
@@ -11,16 +11,16 @@ const readAll = async (): Promise<TodoType[]> => {
 };
 
 const readById = async (todoId: string): Promise<TodoType | null> => {
-  return await Todo.findById(todoId)
-}
+  return await Todo.findById(todoId);
+};
 
 const update = async (todoId: string, todoData: TodoInput): Promise<TodoType | null> => {
-  return await Todo.findByIdAndUpdate(todoId, todoData, { new: true })
-}
+  return await Todo.findByIdAndUpdate(todoId, todoData, { new: true });
+};
 
 const deleteById = async (todoId: string): Promise<TodoType | null> => {
-  return await Todo.findByIdAndDelete(todoId)
-}
+  return await Todo.findByIdAndDelete(todoId);
+};
 
 export default {
   create,
@@ -28,4 +28,4 @@ export default {
   readById,
   update,
   deleteById
-}
+};

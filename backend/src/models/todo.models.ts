@@ -1,7 +1,7 @@
-import mongoose from "mongoose"
-import { TodoType } from '../types/Types'
+import mongoose from 'mongoose';
+import { TodoType } from '../types/Types';
 
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 
 const todoSchema = new Schema<TodoType>({
   username:{
@@ -15,7 +15,7 @@ const todoSchema = new Schema<TodoType>({
 {
   collection: 'todo',
   timestamps: true
-})
+});
 
-const Todo = mongoose.model<TodoType>('Todo', todoSchema)
-export default Todo
+const Todo = mongoose.model<TodoType>('Todo', todoSchema);
+export default Todo;

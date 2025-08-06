@@ -1,5 +1,5 @@
 import express from 'express';
-const router = express.Router()
+const router = express.Router();
 import todoController from '../controllers/todo.controller';
 
 /**
@@ -27,7 +27,7 @@ import todoController from '../controllers/todo.controller';
  *       500:
  *         description: Server error
  */
-router.post('/', todoController.createTodo)
+router.post('/', todoController.createTodo);
 
 /**
  * @swagger
@@ -52,7 +52,7 @@ router.post('/', todoController.createTodo)
  *       500:
  *         description: Server error
  */
-router.get ('/', todoController.findAllTodo)
+router.get ('/', todoController.findAllTodo);
 
 /**
  * @swagger
@@ -84,7 +84,7 @@ router.get ('/', todoController.findAllTodo)
  *       500:
  *         description: Server error
  */
-router.get ('/:id', todoController.readTodoById)
+router.get ('/:id', todoController.readTodoById);
 
 /**
  * @swagger
@@ -125,7 +125,7 @@ router.get ('/:id', todoController.readTodoById)
  *       500:
  *         description: Server error
  */
-router.put('/:id', todoController.updateTodoById)
+router.put('/:id', todoController.updateTodoById);
 
 /**
  * @swagger
@@ -157,6 +157,6 @@ router.put('/:id', todoController.updateTodoById)
  *       500:
  *         description: Server error
  */
-router.delete('/:id', todoController.deleteTodoById)
+router.delete('/:id', todoController.deleteTodoById);
 
-export default router
+export default router;

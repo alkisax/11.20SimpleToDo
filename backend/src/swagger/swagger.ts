@@ -1,17 +1,17 @@
 import path from 'path';
 import m2s from 'mongoose-to-swagger';
 import swaggerJsdoc from 'swagger-jsdoc';
-import Todo from '../models/todo.models'
+import Todo from '../models/todo.models';
 
 const isCompiled = __dirname.includes('build');
 
 const options = {
   definition: {
-    openapi: "3.1.0",
+    openapi: '3.1.0',
     info: {
-      version: "1.0.0",
-      title: "11.20 simple to do",
-      description: "for exercise 11.20",
+      version: '1.0.0',
+      title: '11.20 simple to do',
+      description: 'for exercise 11.20',
     },
     components: {
       schemas: {
