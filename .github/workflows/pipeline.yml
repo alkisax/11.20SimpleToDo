@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MONGODB_TEST_URI: ${{ secrets.MONGODB_TEST_URI }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
     steps:
       - name: Checkout code
@@ -65,6 +66,7 @@ jobs:
         working-directory: ./backend
         env:
           MONGODB_TEST_URI: ${{ secrets.MONGODB_TEST_URI }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
       - name: Wait for backend to be ready
         run: npx wait-on http://localhost:3001/health
