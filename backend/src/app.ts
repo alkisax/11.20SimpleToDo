@@ -21,6 +21,8 @@ app.get('/api/ping', (_req, res) => {
 });
 
 app.get('/health', (_req, res) => {
+  // eslint-disable-next-line no-constant-condition
+  if (true) throw('error...  ')
   res.send('ok');
 });
 
