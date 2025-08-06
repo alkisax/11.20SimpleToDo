@@ -115,7 +115,7 @@ jobs:
         run: npm run build
         working-directory: ./backend
       - name: Start backend server
-        run: npm run start
+        run: npm run start &
         working-directory: ./backend
         env:
           MONGODB_TEST_URI: ${{ secrets.MONGODB_TEST_URI }}
