@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
+import { Routes, Route } from "react-router-dom";
 import type { Todo } from './types/types';
 import { fetchTodos, createTodo, deleteTodo } from './utils/api';
+
+import Layout from './layouts/Layout';
+import Homepage from './pages/Homepage';
+import Health from './pages/Health';
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -41,32 +46,37 @@ function App() {
     }
   }
 
+
   return (
-    <div style={{ maxWidth: 600, margin: 'auto', padding: 16 }}>
-      <h1>Todo List</h1>
+    <>
+      <Routes>
+          {/* Parent route with Layout */}
+          {/* αυτό το  route δεν τελειώνει εδω αλλα περικλύει όλα τα υπόλοιπα */}
+          <Route element={
+            <Layout 
+            />
+          }> 
 
-      <input
-        placeholder="Username"
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-        style={{ marginRight: 8 }}
-      />
-      <input
-        placeholder="New Todo"
-        value={newTodo}
-        onChange={e => setNewTodo(e.target.value)}
-      />
-      <button onClick={handleAdd}>Add Todo</button>
+            <Route 
+              path="/" 
+              element={<Homepage 
+                username={username}
+                newTodo={newTodo}
+                handleAdd={handleAdd}
+                todos={todos}
+                setUsername={setUsername}
+                setNewTodo={setNewTodo}
+                handleDelete={handleDelete}
+              />}
+            />
 
-      <ul>
-        {todos.map(todo => (
-          <li key={todo._id}>
-            <strong>{todo.username || 'anonymous'}</strong>: {todo.todo}
-            <button onClick={() => handleDelete(todo._id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
+            <Route 
+              path="/health"
+              element={<Health />}
+            />
+          </Route>
+        </Routes>    
+    </>
   );
 }
 
