@@ -94,9 +94,7 @@ jobs:
       - name: Notify success
         if: success()
         run: |
-          curl -X POST ${{ secrets.DISCORD_WEBHOOK }} \
-          -H "Content-Type: application/json" \
-          -d '{"content": "✅ 11.20 Deployment succeeded!- by alkisax"}'
+          run: curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "✅ 11.20 Deployment succeeded!- by alkisax"}'
 
       - name: Check the deployed service URL
         uses: jtalk/url-health-check-action@v4
@@ -130,6 +128,4 @@ jobs:
     steps:
       - name: Notify failure
         run: |
-          curl -X POST ${{ secrets.DISCORD_WEBHOOK }} \
-          -H "Content-Type: application/json" \
-          -d '{"content": "❌ Build or tests failed!- by alkisax"}'
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "❌ 11.20 Deployment failed!- by alkisax"}'
