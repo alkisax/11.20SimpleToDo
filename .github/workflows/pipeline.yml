@@ -91,10 +91,10 @@ jobs:
             -H "Accept: application/json" \
             "https://api.render.com/deploy/${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}"
 
-      - name: Notify success
-        if: success()
-        run: |
-          run: curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "✅ 11.20 Deployment succeeded!- by alkisax"}'
+      # - name: Notify success
+      #   if: success()
+      #   run: |
+      #     run: curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "✅ 11.20 Deployment succeeded!- by alkisax"}'
 
       - name: Check the deployed service URL
         uses: jtalk/url-health-check-action@v4
@@ -121,11 +121,11 @@ jobs:
       if: ${{ github.event_name == 'push'  && env.CONDITION == 'false'}}
       uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
 
-  notify-on-failure:
-    if: failure()
-    needs: [ci-pipeline]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Notify failure
-        run: |
-          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "❌ 11.20 Deployment failed!- by alkisax"}'
+  # notify-on-failure:
+  #   if: failure()
+  #   needs: [ci-pipeline]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Notify failure
+  #       run: |
+  #         curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "❌ 11.20 Deployment failed!- by alkisax"}'
