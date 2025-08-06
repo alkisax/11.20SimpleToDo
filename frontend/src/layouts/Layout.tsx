@@ -9,10 +9,10 @@ const Layout = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Todo App
           </Typography>
-          <Button color="inherit" component={Link} to="/">
+          <Button id='HomeButton' color="inherit" component={Link} to="/">
             Home
           </Button>
-          <Button color="inherit" component={Link} to="/health">
+          <Button id='healthButton' color="inherit" component={Link} to="/health">
             Health
           </Button>
         </Toolbar>

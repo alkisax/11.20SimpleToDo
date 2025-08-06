@@ -33,6 +33,7 @@ const Homepage = ({ username, newTodo, handleAdd, todos, setUsername, setNewTodo
 
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
           <TextField
+            id="username"
             label="Username"
             variant="outlined"
             value={username}
@@ -40,13 +41,14 @@ const Homepage = ({ username, newTodo, handleAdd, todos, setUsername, setNewTodo
             fullWidth
           />
           <TextField
+            id='new-todo'
             label="New Todo"
             variant="outlined"
             value={newTodo}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTodo(e.target.value)}
             fullWidth
           />
-          <Button variant="contained" onClick={handleAdd}>
+          <Button id='addButton' variant="contained" onClick={handleAdd}>
             Add
           </Button>
         </Box>
@@ -57,7 +59,7 @@ const Homepage = ({ username, newTodo, handleAdd, todos, setUsername, setNewTodo
               key={todo._id}
               divider
               secondaryAction={
-                <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(todo._id)}>
+                <IconButton id={`delete_${todo._id}`} edge="end" aria-label="delete" onClick={() => handleDelete(todo._id)}>
                   <DeleteIcon />
                 </IconButton>
               }
