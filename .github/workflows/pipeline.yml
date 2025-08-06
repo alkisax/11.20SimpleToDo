@@ -1,0 +1,121 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - wip
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize]
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # - name: Always fail (for testing)
+      #   run: exit 1
+
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: ./frontend
+
+      - name: build
+        run: npm run build
+        working-directory: ./frontend
+
+  lint-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: ./backend
+      - name: Run backend lint
+        run: npm run lint
+        working-directory: ./backend
+
+  lint-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install frontend dependencies
+        run: npm install
+        working-directory: ./frontend
+      - name: Run frontend lint
+        run: npm run lint
+        working-directory: ./frontend
+
+  build-backend:
+    needs: build-frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: ./backend
+
+      - name: Build backend
+        run: npm run tsc
+        working-directory: ./backend
+
+  test-backend:
+    needs: build-backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: ./backend
+
+      - name: Run backend tests
+        run: npm run test
+        working-directory: ./backend
+        
+  e2e-tests:
+    needs: test-backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install e2e dependencies
+        run: npm install
+        working-directory: ./e2e
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v5
+        with:
+          start: npm run start --prefix ./backend
+          wait-on: http://localhost:3001/health
+          command: npm run cypress:run
+          working-directory: ./e2e
