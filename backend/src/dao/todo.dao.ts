@@ -1,23 +1,31 @@
-import { TodoType } from '../types/Types'
+import { TodoType, TodoInput } from '../types/Types'
 import Todo from '../models/todo.models';
 
-export const create = async (todoData: TodoType): Promise<TodoType> => {
+const create = async (todoData: TodoInput): Promise<TodoType> => {
   const todo = new Todo(todoData);
   return await todo.save();
 };
 
-export const readAll = async (): Promise<TodoType[]> => {
+const readAll = async (): Promise<TodoType[]> => {
   return await Todo.find();
 };
 
-export const readById = async (todoId: string): Promise<TodoType | null> => {
+const readById = async (todoId: string): Promise<TodoType | null> => {
   return await Todo.findById(todoId)
 }
 
-export const update = async (todoId: string, todoData: TodoType): Promise<TodoType | null> => {
+const update = async (todoId: string, todoData: TodoInput): Promise<TodoType | null> => {
   return await Todo.findByIdAndUpdate(todoId, todoData, { new: true })
 }
 
-export const deleteTodoById = async (todoId: string): Promise<TodoType | null> => {
+const deleteById = async (todoId: string): Promise<TodoType | null> => {
   return await Todo.findByIdAndDelete(todoId)
+}
+
+export default {
+  create,
+  readAll,
+  readById,
+  update,
+  deleteById
 }

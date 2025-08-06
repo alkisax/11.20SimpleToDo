@@ -15,7 +15,8 @@
     "alwaysStrict": true,
     "esModuleInterop": true,
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "useUnknownInCatchVariables": true
   },
   "include": ["./**/*"]
 }

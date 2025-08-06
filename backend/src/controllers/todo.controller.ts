@@ -1,82 +1,105 @@
-import { TodoType } from '../types/Types'
-import Todo from '../models/todo.models';
-import { create } from '../dao/todo.dao'
+import { Request, Response } from 'express';
+import { TodoType, TodoInput } from '../types/Types'
+import daoTodo from '../dao/todo.dao'
 
-exports.create = async (req: TodoType, res: TodoType) => {
-  let data = req.body
+const createTodo = async (req: Request<TodoType>, res: Response) => {
+  let data: TodoType = req.body
 
-  const username = data.username
+  const username: string | undefined = data.username
   const todo = data.todo
 
   try {
-    const newTodo = await create({
+    const newTodo: TodoInput = {
       username,
-      todo,
-    });
-    res.status(201).json(newTodo)
-  } catch(error) {
-    res.status(400).json({error: error.message})
+      todo
+    }
+    await daoTodo.create(newTodo);
+    return res.status(201).json({ status: true, data: newTodo })
+  } catch(error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ status: false, error: `create: ${error.message}`})      
+    } else {
+      return res.status(500).send({ status: false, error: 'unknown error' });
+    }
   }
 }
 
-exports.findAll = async (req,res) => {
+const findAllTodo = async (_req: Request, res: Response) => {
   try {
-    const todos = await todoDAO.readAll();
-    res.status(200).json({ status: true, data: todos });
-  } catch (error) {
-    res.status(500).json({ status: false, error: 'Internal server error' });
+    const todos: TodoType[] = await daoTodo.readAll();
+    return res.status(200).json({ status: true, data: todos });
+  } catch(error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ status: false, error: `findAll: ${error.message}`})      
+    } else {
+      return res.status(500).send({ status: false, error: 'unknown error' });
+    }
   }
 }
 
-exports.readById = async (req, res) => {
-  const todoId = req.params.id
+const readTodoById = async (req: Request, res: Response) => {
+  const todoId: string = req.params.id
   try {
-    const todo = await todoDAO.readById(todoId)
-    res.status(200).json ({ status: true, data: todo})
-  } catch (error)
- {
-  res.status(500).json({ status: false, error: 'sever error readById'})
- }}
+    const todo: TodoType | null = await daoTodo.readById(todoId)
 
-exports.updateById = async (req, res) => {
-  const todoId = req.params.id
-  const todoData = req.body
-  try {
-    const todo = await todoDAO.update(todoId, todoData)
-    res.status(200).json ({ status: true, data: todo})
-  } catch (error)
- {
-  res.status(500).json({ status: false, error: 'sever error updateById'})
- }
+    if (!todo) {
+      return res.status(404).json({ status: false, error: 'Todo not found' })
+    }
+
+    return res.status(200).json ({ status: true, data: todo})
+  } catch (error : unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ status: false, error: `readById: ${error.message}`})
+    } else {
+      return res.status(500).send({ status: false, error: 'unknown error' });
+    }
+  }
 }
 
-exports.deleteById = async (req, res) => {
-  const todoId = req.params.id
+const updateTodoById = async (req: Request, res: Response) => {
+  const todoId: string = req.params.id
+  const todoData: TodoInput = req.body
+  try {
+    const todo = await daoTodo.update(todoId, todoData)
+    return res.status(200).json ({ status: true, data: todo})
+  } catch (error : unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ status: false, error: `updateById: ${error.message}`})
+    } else {
+      return res.status(500).send({ status: false, error: 'unknown error' });
+    }
+  }
+}
+
+const deleteTodoById = async (req: Request, res: Response) => {
+  const todoId: string = req.params.id
+
   if (!todoId){
-    return res.status(400).json({
-      status: false,
-      error: 'Todo ID is required'
-    })
+    return res.status(400).json({ status: false, error: 'Todo ID is required' })
   }
   
   try {
-    const deleteTodo = await todoDAO.deleteTodoById(todoId) 
+    const deleteTodo: TodoType | null = await daoTodo.deleteById(todoId) 
 
     if (!deleteTodo){
-      return res.status(404).json({
-        status: false,
-        error: 'Todo not found'
-      })
+      return res.status(404).json({ status: false, error: 'Todo not found' })
     } else {
-      res.status(200).json({
-        status: true,
-        message: `Todo deleted successfully`,
-      })
+      return res.status(200).json({ status: true, message: `Todo deleted successfully` })
     }
-  } catch (error) {
-    res.status(500).json({
-      status: false,
-      error: error.message
-    })
+
+  } catch (error : unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ status: false, error: `deleteById: ${error.message}`})
+    } else {
+      return res.status(500).send({ status: false, error: 'unknown error' });
+    }
   }
+}
+
+export default {
+  createTodo, 
+  findAllTodo,
+  readTodoById,
+  updateTodoById,
+  deleteTodoById,
 }
