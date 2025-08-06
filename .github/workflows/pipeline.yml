@@ -81,3 +81,12 @@ jobs:
       - name: Run Cypress tests
         run: npm run cypress:run
         working-directory: ./e2e
+
+      - name: Trigger deployment
+        env:
+          CONDITION: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
+        if: ${{ github.event_name == 'push' && env.CONDITION == 'false'}}
+        run: |
+          curl -X GET \
+            -H "Accept: application/json" \
+            "https://api.render.com/deploy/${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}"
