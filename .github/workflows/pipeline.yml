@@ -1,10 +1,10 @@
 name: Deployment pipeline
 
 on:
-  push:
-    branches:
-      - main
-      - wip
+  # push:
+  #   branches:
+  #     - main
+  #     - wip
   pull_request:
     branches:
       - main
@@ -20,6 +20,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      # - name: Always fail (for testing)
+      #   run: exit 1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -90,4 +93,51 @@ jobs:
           curl -X GET \
             -H "Accept: application/json" \
             "https://api.render.com/deploy/${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}"
+
+      - name: Notify success
+        if: success()
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "✅ 11.20 Deployment succeeded!- by alkisax"}'
+
+      - name: Check the deployed service URL
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://one1-20simpletodo.onrender.com
+          follow-redirect: true
+          max-attempts: 5
+          retry-delay: 10s
+
+  tag_release:
+    needs: [ci-pipeline]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: '0'  
+    - name: Bump version and push tag
+      env:
+        CONDITION: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DEFAULT_BUMP: patch
+      if: ${{ github.event_name == 'pull_request'  && env.CONDITION == 'false'}}
+      uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
+
+  all-clear:
+    needs: [tag_release]
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - name: Confirm all checks passed
+        run: echo "✅ All ok. Proceed to merge."
+
+  notify-on-failure:
+    if: failure()
+    needs: [ci-pipeline]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify failure
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "❌ 11.20 Deployment failed!- by alkisax"}'
 
