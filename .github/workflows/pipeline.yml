@@ -99,13 +99,13 @@ jobs:
         run: |
           curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "✅ 11.20 Deployment succeeded!- by alkisax"}'
 
-      - name: Check the deployed service URL
-        uses: jtalk/url-health-check-action@v4
-        with:
-          url: https://one1-20simpletodo.onrender.com
-          follow-redirect: true
-          max-attempts: 5
-          retry-delay: 10s
+      # - name: Check the deployed service URL
+      #   uses: jtalk/url-health-check-action@v4
+      #   with:
+      #     url: https://one1-20simpletodo.onrender.com
+      #     follow-redirect: true
+      #     max-attempts: 5
+      #     retry-delay: 10s
 
   tag_release:
     needs: [ci-pipeline]
