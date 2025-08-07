@@ -124,6 +124,14 @@ jobs:
       if: ${{ github.event_name == 'pull_request'  && env.CONDITION == 'false'}}
       uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
 
+  all-clear:
+    needs: [tag_release]
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - name: Confirm all checks passed
+        run: echo "✅ All ok. Proceed to merge."
+
   notify-on-failure:
     if: failure()
     needs: [ci-pipeline]
