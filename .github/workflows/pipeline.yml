@@ -1,10 +1,10 @@
 name: Deployment pipeline
 
 on:
-  push:
-    branches:
-      # - main
-      - wip
+  # push:
+  #   branches:
+  #     - main
+  #     - wip
   pull_request:
     branches:
       - main
