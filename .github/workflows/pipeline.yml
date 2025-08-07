@@ -121,7 +121,7 @@ jobs:
         CONDITION: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DEFAULT_BUMP: patch
-      if: ${{ github.event_name == 'push'  && env.CONDITION == 'false'}}
+      if: ${{ github.event_name == 'pull_request'  && env.CONDITION == 'false'}}
       uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
 
   notify-on-failure:
