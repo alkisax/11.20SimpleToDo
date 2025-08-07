@@ -88,7 +88,7 @@ jobs:
       - name: Trigger deployment
         env:
           CONDITION: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
-        if: ${{ github.event_name == 'push' && env.CONDITION == 'false'}}
+        if: ${{ github.event_name == 'pull_request' && env.CONDITION == 'false'}}
         run: |
           curl -X GET \
             -H "Accept: application/json" \
