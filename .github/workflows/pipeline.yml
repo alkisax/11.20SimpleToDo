@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - wip
+      # - wip
   pull_request:
     branches:
       - main
@@ -130,4 +130,3 @@ jobs:
   #       run: |
   #         curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "❌ 11.20 Deployment failed!- by alkisax"}'
 
-  
