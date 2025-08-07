@@ -21,6 +21,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Always fail (for testing)
+        run: exit 1
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -121,12 +124,12 @@ jobs:
       if: ${{ github.event_name == 'push'  && env.CONDITION == 'false'}}
       uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
 
-  # notify-on-failure:
-  #   if: failure()
-  #   needs: [ci-pipeline]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Notify failure
-  #       run: |
-  #         curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "❌ 11.20 Deployment failed!- by alkisax"}'
+  notify-on-failure:
+    if: failure()
+    needs: [ci-pipeline]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify failure
+        run: |
+          curl -X POST "${{ secrets.DISCORD_WEBHOOK }}" -H "Content-Type: application/json" -d '{"content": "❌ 11.20 Deployment failed!- by alkisax"}'
 
